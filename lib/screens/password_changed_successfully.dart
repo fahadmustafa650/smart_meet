@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class SuccessfullySendQuestionScreen extends StatelessWidget {
+class PasswordChanged extends StatelessWidget {
   static final id = '/password_sent_successfully';
   @override
   Widget build(BuildContext context) {

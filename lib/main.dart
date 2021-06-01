@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       // home: EmployeeSearchBar(),
-      initialRoute: ContactUs.id,
+      initialRoute: CustomSplashScreen.id,
       debugShowCheckedModeBanner: false,
       routes: {
         AppointmentSentScreen.id: (context) => AppointmentSentScreen(),
@@ -60,8 +60,7 @@ class MyApp extends StatelessWidget {
         ReserveEmployeeSpotScreen.id: (context) => ReserveEmployeeSpotScreen(),
         ScanQRCodeStep1.id: (context) => ScanQRCodeStep1(),
         SignUpAsScreen.id: (context) => SignUpAsScreen(),
-        SuccessfullySendQuestionScreen.id: (context) =>
-            SuccessfullySendQuestionScreen(),
+        PasswordChanged.id: (context) => PasswordChanged(),
         TemperatureDetectionStep2.id: (context) => TemperatureDetectionStep2(),
         UserProfile.id: (context) => UserProfile(),
         VisitorSignInScreen.id: (context) => VisitorSignInScreen(),

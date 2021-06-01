@@ -81,7 +81,14 @@ class _EmployeeSignInScreenState extends State<EmployeeSignInScreen> {
                   ),
                   resgisterButton(),
                   SizedBox(
-                    height: 50.0,
+                    height: 15,
+                  ),
+                  Text(
+                    'OR Continue with',
+                    style: TextStyle(color: Colors.black87, fontSize: 18),
+                  ),
+                  SizedBox(
+                    height: 13.0,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,

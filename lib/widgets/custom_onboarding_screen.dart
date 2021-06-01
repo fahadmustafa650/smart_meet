@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class CustomOnboardingScreen extends StatelessWidget {
   final String heading;
-  final imageAddress;
+  final String para;
   CustomOnboardingScreen({
     Key key,
     @required this.heading,
-    @required this.imageAddress,
+    @required this.para,
   }) : super(key: key);
 
   @override
@@ -15,12 +15,6 @@ class CustomOnboardingScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 20),
-          child: Image(
-            image: AssetImage(imageAddress),
-          ),
-        ),
         SizedBox(
           height: 15,
         ),
@@ -36,7 +30,7 @@ class CustomOnboardingScreen extends StatelessWidget {
           width: 280,
           height: 80,
           child: Text(
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Elementum sed amet elit commodo, vulputate risus.',
+            para == null ? '' : para,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Color(0xff6D6D6D),

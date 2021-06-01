@@ -12,18 +12,21 @@ class OnBoardingScreens extends StatefulWidget {
 
 class _OnBoardingScreensState extends State<OnBoardingScreens> {
   int currentPage = 0;
-  List<Map<String, String>> splashData = [
+  List<Map<String, String>> onboardingData = [
     {
-      "heading": "Share Vehicle Details",
-      "image": "assets/images/car_illustration.png"
+      "heading": ".Reception minus",
+      "paragraph":
+          "Smart Meet truly understands how important it is to maintain minimal human interactions. This is why, we have a self-service Kiosk. We take your safety as our priority!"
     },
     {
-      "heading": "Get Registered",
-      "image": "assets/images/phone _illustration.png"
+      "heading": "Run in appointment",
+      "paragraph":
+          "Did you forget to book an appointment? Smart Meet made it easy for you! Book a run-in appointment right now"
     },
     {
-      "heading": "Earn With qwikio",
-      "image": "assets/images/card_illustration.png"
+      "heading": "Temperature Detection",
+      "paragraph":
+          "With a COVID ridden world, its important that your body temperature is normal. Just go through Thermal Detection, so we can maintain a safer place for everyone"
     },
   ];
   @override
@@ -41,8 +44,9 @@ class _OnBoardingScreensState extends State<OnBoardingScreens> {
                 Expanded(
                   flex: 6,
                   child: CustomOnboardingScreen(
-                    imageAddress: splashData[currentPage]["image"],
-                    heading: splashData[currentPage]['heading'],
+                    //  imageAddress: splashData[currentPage]["image"],
+                    heading: onboardingData[currentPage]['heading'],
+                    para: onboardingData[currentPage]['paragraph'],
                   ),
                 ),
                 Expanded(
@@ -54,7 +58,7 @@ class _OnBoardingScreensState extends State<OnBoardingScreens> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: List.generate(
-                            splashData.length,
+                            onboardingData.length,
                             (index) => _buildDot(index: index),
                           ),
                         ),

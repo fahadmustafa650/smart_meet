@@ -48,7 +48,7 @@ class NewPasswordScreen extends StatelessWidget {
   GestureDetector updateBtn(BuildContext context, double screenWidth) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, SuccessfullySendQuestionScreen.id);
+        Navigator.pushNamed(context, PasswordChanged.id);
       },
       child: Container(
         width: screenWidth * 0.7,
