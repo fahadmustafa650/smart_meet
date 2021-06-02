@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_meet/Constants/constants.dart';
+import 'package:smart_meet/Visitor/visitor_profile_screen.dart';
 import 'package:smart_meet/screens/forget_password_screen.dart';
 import 'package:smart_meet/widgets/login_with_fb.dart';
 import 'package:smart_meet/widgets/login_with_google.dart';
@@ -50,7 +51,9 @@ class _VisitorSignInScreenState extends State<VisitorSignInScreen> {
         ),
         height: 40.0,
         child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, VisitorProfileScreen.id);
+            },
             child: Center(
               child: FittedBox(
                 child: Text(

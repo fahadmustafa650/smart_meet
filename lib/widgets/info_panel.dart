@@ -14,10 +14,11 @@ class InfoPanel extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Container(
-      width: screenWidth * 0.25,
-      height: screenWidth * 0.25,
+      width: screenWidth * 0.2,
+      height: screenWidth * 0.2,
       child: Card(
         elevation: 7,
+        margin: EdgeInsets.only(top: 25),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -30,12 +31,15 @@ class InfoPanel extends StatelessWidget {
             SizedBox(
               height: 10,
             ),
-            Text(
-              title,
-              style: TextStyle(
-                  color: textIconColor,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w900),
+            FittedBox(
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: textIconColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900),
+              ),
             )
           ],
         ),

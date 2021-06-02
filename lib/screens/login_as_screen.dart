@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_meet/Employee/employee_screens/emp_sign_in_screen.dart';
 import 'package:smart_meet/Visitor/Visitor Authentication/visitor_sign_in_screen.dart';
+import 'package:smart_meet/screens/sign_up_as_screen.dart';
 import 'package:smart_meet/widgets/top_logo.dart';
 
 class LoginAsScreen extends StatefulWidget {
@@ -44,8 +45,25 @@ class _LoginAsScreenState extends State<LoginAsScreen> {
                   //BOTH CIRCULAR SHAPES COACH AND ATHLETE
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [CoachCircleBtn(), AthleteCircleBtn()],
+                    children: [VisitorCircleBtn(), EmployeeCircleBtn()],
                   ),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Not Registered?',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        registerBtn(context),
+                      ],
+                    ),
+                  )
                 ],
               ),
             ],
@@ -67,7 +85,20 @@ class _LoginAsScreenState extends State<LoginAsScreen> {
   }
 }
 
-class AthleteCircleBtn extends StatelessWidget {
+Widget registerBtn(BuildContext context) {
+  return GestureDetector(
+    onTap: () {
+      Navigator.pushNamed(context, SignUpAsScreen.id);
+    },
+    child: Text(
+      'Register',
+      style: TextStyle(
+          color: Colors.blue[900], fontSize: 20, fontWeight: FontWeight.bold),
+    ),
+  );
+}
+
+class EmployeeCircleBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -99,7 +130,7 @@ class AthleteCircleBtn extends StatelessWidget {
   }
 }
 
-class CoachCircleBtn extends StatelessWidget {
+class VisitorCircleBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(

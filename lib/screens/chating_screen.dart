@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_meet/models/message_model.dart';
+import 'package:smart_meet/screens/call_screen.dart';
 
 const chatBubbleColor = Colors.blue;
 
@@ -64,7 +65,9 @@ class _ChatingScreenState extends State<ChatingScreen> {
                 Icons.call,
                 color: Colors.lightBlueAccent,
               ),
-              onPressed: null)
+              onPressed: () {
+                Navigator.pushNamed(context, PhoneCallScreen.id);
+              })
         ],
       ),
       body: Column(

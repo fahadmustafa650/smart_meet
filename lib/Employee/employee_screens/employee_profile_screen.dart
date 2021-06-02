@@ -1,36 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:smart_meet/screens/chat_screen.dart';
+import 'package:smart_meet/screens/edit_profile_screen.dart';
 import 'package:smart_meet/widgets/info_panel.dart';
 
-class UserProfile extends StatelessWidget {
-  static final id = '/user_profile_screen';
+import 'appointment_requests_screen.dart';
+
+class EmployeeProfileScreen extends StatelessWidget {
+  static final id = '/employee_profile_screen';
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Color(0XFFFFFFFF),
-      drawer: customDrawer(),
+      drawer: customDrawer(context),
       appBar: AppBar(
         backgroundColor: Colors.lightBlue,
         title: Text(
-          'User Profile',
+          'Employee Name',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
       body: GridView.count(
         crossAxisCount: 2,
-        mainAxisSpacing: 25,
+        mainAxisSpacing: 15,
         crossAxisSpacing: 25,
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
         children: [
-          bookAppointmentBtn(),
-          chatBtn(),
-          editProfileBtn(),
-          logoutBtn(),
+          appointmentsRequestBtn(context),
+          chatBtn(context),
+          bookedAppointments(context),
+          editProfileBtn(context),
+          reportsBtn(context),
+          logoutBtn(context),
         ],
       ),
     );
   }
 
-  Widget customDrawer() {
+  GestureDetector reportsBtn(BuildContext context) {
+    return GestureDetector(
+      child: InfoPanel(
+          title: 'Reports',
+          textIconColor: Colors.black,
+          iconData: Icons.report),
+    );
+  }
+
+  GestureDetector bookedAppointments(BuildContext context) {
+    return GestureDetector(
+      child: InfoPanel(
+          title: 'Booked\nAppointments',
+          textIconColor: Colors.yellow[800],
+          iconData: FontAwesomeIcons.addressCard),
+    );
+  }
+
+  Widget customDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.all(0),
@@ -46,13 +73,16 @@ class UserProfile extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.person),
             title: Text("Edit Profile"),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, EditProfileScreen.id);
+            },
           ),
           ListTile(
             leading: Icon(Icons.dashboard),
-            title: Text("Book Appointment"),
+            title: Text("Appointment Requests"),
             onTap: () {
               // print("Categories Clicked");
+              Navigator.pushNamed(context, AppointmentRequestsScreen.id);
             },
           ),
           ListTile(
@@ -65,17 +95,9 @@ class UserProfile extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.message),
             title: Text("Chat"),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: Icon(Icons.share),
-            title: Text(""),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: Icon(Icons.rate_review),
-            title: Text(""),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, ChatScreen.id);
+            },
           ),
           ListTile(
             leading: Icon(
@@ -89,35 +111,41 @@ class UserProfile extends StatelessWidget {
     );
   }
 
-  Widget editProfileBtn() {
+  Widget editProfileBtn(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, EditProfileScreen.id);
+      },
       child: InfoPanel(
         title: 'Edit Profile',
-        textIconColor: Color(0XFF415EB6),
+        textIconColor: Colors.blue,
         iconData: Icons.person,
       ),
     );
   }
 
-  Widget chatBtn() {
+  Widget chatBtn(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, ChatScreen.id);
+      },
       child: InfoPanel(
         // bgColor: Color(0XFFA1F8AF).withOpacity(0.4),
         title: 'Chat',
-        textIconColor: Color(0XFF4CE364),
+        textIconColor: Colors.green[400],
         iconData: Icons.chat,
       ),
     );
   }
 
-  Widget bookAppointmentBtn() {
+  Widget appointmentsRequestBtn(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, AppointmentRequestsScreen.id);
+      },
       child: InfoPanel(
-        title: 'Book Appointment',
-        textIconColor: Color(0XFF23B0B0),
+        title: 'Appointment\nRequests',
+        textIconColor: Colors.yellow[900],
         iconData: Icons.approval,
       ),
     );
@@ -145,7 +173,7 @@ class UserProfile extends StatelessWidget {
     );
   }
 
-  Widget logoutBtn() {
+  Widget logoutBtn(BuildContext context) {
     return GestureDetector(
       onTap: () {
         // Navigator.push(context,
@@ -153,7 +181,7 @@ class UserProfile extends StatelessWidget {
       },
       child: InfoPanel(
         title: 'Logout',
-        textIconColor: Color(0XFF415EB6),
+        textIconColor: Colors.red,
         iconData: Icons.logout,
       ),
     );

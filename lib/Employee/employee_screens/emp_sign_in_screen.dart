@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_meet/Constants/constants.dart';
+import 'package:smart_meet/Visitor/visitor_profile_screen.dart';
 import 'package:smart_meet/screens/forget_password_screen.dart';
 import 'package:smart_meet/widgets/login_with_fb.dart';
 import 'package:smart_meet/widgets/login_with_google.dart';
 
 import 'emp_sign_up_screen.dart';
+import 'employee_profile_screen.dart';
 
 class EmployeeSignInScreen extends StatefulWidget {
   static final id = '/employee_sign_in';
@@ -75,7 +77,7 @@ class _EmployeeSignInScreenState extends State<EmployeeSignInScreen> {
                   SizedBox(
                     height: 20.0,
                   ),
-                  loginBtn(),
+                  loginBtn(context),
                   SizedBox(
                     height: 13.0,
                   ),
@@ -164,7 +166,7 @@ class _EmployeeSignInScreenState extends State<EmployeeSignInScreen> {
     );
   }
 
-  Container loginBtn() {
+  Container loginBtn(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -172,7 +174,9 @@ class _EmployeeSignInScreenState extends State<EmployeeSignInScreen> {
         ),
         height: 40.0,
         child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, EmployeeProfileScreen.id);
+            },
             child: Center(
               child: FittedBox(
                 child: Text(
