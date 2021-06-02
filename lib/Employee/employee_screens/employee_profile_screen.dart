@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smart_meet/screens/chat_screen.dart';
 import 'package:smart_meet/screens/edit_profile_screen.dart';
 import 'package:smart_meet/widgets/info_panel.dart';
-
 import 'appointment_requests_screen.dart';
 
 class EmployeeProfileScreen extends StatelessWidget {
