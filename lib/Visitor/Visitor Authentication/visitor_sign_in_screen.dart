@@ -47,7 +47,7 @@ class _VisitorSignInScreenState extends State<VisitorSignInScreen> {
         setState(() {
           _isLoading = false;
         });
-
+        print('statusCode=${response.statusCode}');
         Navigator.pushNamed(context, VisitorHomeScreen.id,
             arguments: {'email': _emailController.text.toString()});
       }

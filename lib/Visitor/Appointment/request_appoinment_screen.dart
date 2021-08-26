@@ -42,7 +42,20 @@ class _RequestAppointmentScreenState extends State<RequestAppointmentScreen> {
               SizedBox(
                 height: 10,
               ),
-              nameField(),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.85,
+                height: 50,
+                margin: EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.grey, width: 1)),
+                child: Text('Ammar Zeb',
+                    style: TextStyle(color: Colors.black54, fontSize: 18)),
+              ),
               SizedBox(
                 height: 5,
               ),
@@ -51,8 +64,54 @@ class _RequestAppointmentScreenState extends State<RequestAppointmentScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    selectDate(context),
-                    selectTime(context),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        height: 45,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white,
+                            border: Border.all(color: Colors.grey, width: 1)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text('Select Date',
+                                style: TextStyle(
+                                    color: Colors.grey, fontSize: 18)),
+                            Icon(
+                              Icons.calendar_today,
+                              color: Colors.grey,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        height: 45,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white,
+                            border: Border.all(color: Colors.grey, width: 1)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text('Select Time',
+                                style: TextStyle(
+                                    color: Colors.grey, fontSize: 18)),
+                            Icon(
+                              FontAwesomeIcons.clock,
+                              color: Colors.grey,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -142,75 +201,6 @@ class _RequestAppointmentScreenState extends State<RequestAppointmentScreen> {
             ),
             labelStyle: TextStyle(color: Colors.grey, fontSize: 18)),
       ),
-    );
-  }
-
-  Widget selectTime(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        width: MediaQuery.of(context).size.width * 0.4,
-        height: 45,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Colors.white,
-            border: Border.all(color: Colors.grey, width: 1)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text('Select Time',
-                style: TextStyle(color: Colors.grey, fontSize: 18)),
-            Icon(
-              FontAwesomeIcons.clock,
-              color: Colors.grey,
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget selectDate(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        width: MediaQuery.of(context).size.width * 0.4,
-        height: 45,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Colors.white,
-            border: Border.all(color: Colors.grey, width: 1)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text('Select Date',
-                style: TextStyle(color: Colors.grey, fontSize: 18)),
-            Icon(
-              Icons.calendar_today,
-              color: Colors.grey,
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Container nameField() {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.85,
-      height: 50,
-      margin: EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 10,
-      ),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.grey, width: 1)),
-      child: Text('Ammar Zeb',
-          style: TextStyle(color: Colors.black54, fontSize: 18)),
     );
   }
 }

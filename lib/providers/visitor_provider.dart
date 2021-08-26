@@ -13,7 +13,7 @@ class Visitors with ChangeNotifier {
   Visitor _visitor;
 
   Visitor get getVisitor {
-    return _visitor == null ? Visitor(id: 'x') : _visitor;
+    return _visitor == null ? Visitor() : _visitor;
   }
 
   Future<void> getVisitorData(String email) async {

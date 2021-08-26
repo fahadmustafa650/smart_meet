@@ -48,12 +48,6 @@ class EditProfileForm extends StatefulWidget {
 
 class _EditProfileFormState extends State<EditProfileForm> {
   final _formKey = GlobalKey<FormState>();
-
-  final _nameController = TextEditingController(text: '');
-  final _emailController = TextEditingController();
-  final _userNameController = TextEditingController();
-  final _phoneNoController = TextEditingController();
-
   File _image;
   void submitForm() {
     final isValid = _formKey.currentState.validate();
@@ -299,7 +293,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
             TextFormField(
               obscureText: false,
               style: loginTextFieldsStyles,
-              //initialValue: visitorData.getVisitor.,
+              // initialValue: visitorData.getVisitor.,
               //controller: _emailController,
               validator: (value) {
                 if (value.isEmpty) {

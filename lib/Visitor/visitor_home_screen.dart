@@ -35,8 +35,9 @@ class _VisitorHomeScreenState extends State<VisitorHomeScreen> {
       setState(() {
         _isLoading = true;
       });
-      await Provider.of<Visitors>(context)
-          .getVisitorData('fahadmustafa650@gmail.com');
+      final args =
+          ModalRoute.of(context).settings.arguments as Map<String, String>;
+      await Provider.of<Visitors>(context).getVisitorData(args['email']);
     }
     setState(() {
       _isInit = false;
@@ -50,7 +51,66 @@ class _VisitorHomeScreenState extends State<VisitorHomeScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Color(0XFFFFFFFF),
-      drawer: customDrawer(context),
+      drawer: !_isLoading
+          ? Drawer(
+              child: ListView(
+                padding: EdgeInsets.all(0),
+                children: <Widget>[
+                  UserAccountsDrawerHeader(
+                    accountEmail: visitorData.email == null
+                        ? CircularProgressIndicator()
+                        : Text(visitorData.email),
+                    accountName: visitorData.firstName == null ||
+                            visitorData.lastName == null
+                        ? CircularProgressIndicator()
+                        : Text(
+                            '${visitorData.firstName} ${visitorData.lastName}'),
+                    currentAccountPicture: _isLoading
+                        ? CircularProgressIndicator()
+                        : CircleAvatar(
+                            radius: 100,
+                            backgroundImage: _isLoading
+                                ? AssetImage('assets/images/blank_pic.jpg')
+                                : MemoryImage(visitorData.image),
+                          ),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.person),
+                    title: Text("Edit Profile"),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.dashboard),
+                    title: Text("Book Appointment"),
+                    onTap: () {
+                      // print("Categories Clicked");
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.add_to_photos),
+                    title: Text("Reports"),
+                    onTap: () {
+                      //print("Add Clicked");
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.message),
+                    title: Text("Chat"),
+                    onTap: () {
+                      Navigator.pushNamed(context, ChatScreen.id);
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.logout,
+                    ),
+                    title: Text("Logout"),
+                    onTap: () {},
+                  ),
+                ],
+              ),
+            )
+          : Container(),
       appBar: AppBar(
         backgroundColor: Colors.lightBlue,
         title: _isLoading
@@ -59,7 +119,7 @@ class _VisitorHomeScreenState extends State<VisitorHomeScreen> {
               )
             : Text(
                 ('${visitorData.firstName} ${visitorData.lastName}'),
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
               ),
         centerTitle: true,
       ),
@@ -137,66 +197,6 @@ class _VisitorHomeScreenState extends State<VisitorHomeScreen> {
     );
   }
 
-  Widget customDrawer(BuildContext context) {
-    final visitorData = Provider.of<Visitors>(context).getVisitor;
-    return !_isLoading
-        ? Drawer(
-            child: ListView(
-              padding: EdgeInsets.all(0),
-              children: <Widget>[
-                UserAccountsDrawerHeader(
-                  accountEmail: visitorData.email == null
-                      ? CircularProgressIndicator()
-                      : Text(visitorData.email),
-                  accountName: visitorData.firstName == null ||
-                          visitorData.lastName == null
-                      ? CircularProgressIndicator()
-                      : Text(
-                          '${visitorData.firstName} ${visitorData.lastName}'),
-                  currentAccountPicture: CircleAvatar(
-                    radius: 100,
-                    backgroundImage: MemoryImage(visitorData.image),
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.person),
-                  title: Text("Edit Profile"),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: Icon(Icons.dashboard),
-                  title: Text("Book Appointment"),
-                  onTap: () {
-                    // print("Categories Clicked");
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.add_to_photos),
-                  title: Text("Reports"),
-                  onTap: () {
-                    //print("Add Clicked");
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.message),
-                  title: Text("Chat"),
-                  onTap: () {
-                    Navigator.pushNamed(context, ChatScreen.id);
-                  },
-                ),
-                ListTile(
-                  leading: Icon(
-                    Icons.logout,
-                  ),
-                  title: Text("Logout"),
-                  onTap: () {},
-                ),
-              ],
-            ),
-          )
-        : Container();
-  }
-
   Widget bookAppointmentBtn(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -206,28 +206,6 @@ class _VisitorHomeScreenState extends State<VisitorHomeScreen> {
         title: 'Book Appointment',
         textIconColor: Colors.yellow[900],
         iconData: Icons.approval,
-      ),
-    );
-  }
-
-  Widget busScheduleBtn() {
-    return GestureDetector(
-      onTap: () {},
-      child: InfoPanel(
-        title: '',
-        textIconColor: Color(0XFFAC4141),
-        iconData: Icons.bus_alert,
-      ),
-    );
-  }
-
-  Widget workPickupBtn() {
-    return GestureDetector(
-      onTap: () {},
-      child: InfoPanel(
-        title: 'Work pickup',
-        textIconColor: Color(0XFFFFB110),
-        iconData: Icons.work,
       ),
     );
   }
