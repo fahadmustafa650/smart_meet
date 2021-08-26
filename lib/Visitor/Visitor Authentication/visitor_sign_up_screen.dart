@@ -16,14 +16,15 @@ import 'package:smart_meet/widgets/term_condition.dart';
 import 'package:string_validator/string_validator.dart';
 
 class VisitorSignUpScreen extends StatefulWidget {
-  static final id = '/employee_sign_up';
+  static final id = '/visitor_sign_up';
   @override
   _VisitorSignUpScreenState createState() => _VisitorSignUpScreenState();
 }
 
 class _VisitorSignUpScreenState extends State<VisitorSignUpScreen> {
   //VARIABLES
-  final _nameController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _phoneNumberController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -54,10 +55,11 @@ class _VisitorSignUpScreenState extends State<VisitorSignUpScreen> {
     request.headers.addAll({
       'Content-Type': 'Multipart/form-data',
     });
-    print(_nameController.text);
+    print(_firstNameController.text);
     print(_emailController.text);
     print(_userNameController.text);
-    request.fields['name'] = _nameController.text.toString();
+    request.fields['firstName'] = _firstNameController.text.toString();
+    request.fields['lastName'] = _lastNameController.text.toString();
     request.fields['email'] = _emailController.text.toString();
     request.fields['username'] = _userNameController.text.toString();
     request.fields['password'] = _passwordController.text.toString();
@@ -296,34 +298,71 @@ class _VisitorSignUpScreenState extends State<VisitorSignUpScreen> {
                               style: TextStyle(color: Colors.red),
                             ),
                             SizedBox(height: 10.0),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(50),
-                              child: TextFormField(
-                                controller: _nameController,
-                                textInputAction: TextInputAction.next,
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'Please Enter a name';
-                                  }
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: TextFormField(
+                                      controller: _firstNameController,
+                                      textInputAction: TextInputAction.next,
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return 'Please Enter a name';
+                                        }
 
-                                  return null;
-                                },
-                                decoration: InputDecoration(
-                                  labelText: 'Name',
-                                  labelStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 15,
-                                  ),
-                                  border: InputBorder.none,
-                                  fillColor: Colors.grey[100],
-                                  filled: true,
-                                  prefixIcon: Icon(
-                                    FontAwesomeIcons.userAlt,
-                                    color: Colors.grey,
-                                    size: 15.0,
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                        labelText: 'First Name',
+                                        labelStyle: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 15,
+                                        ),
+                                        border: InputBorder.none,
+                                        fillColor: Colors.grey[100],
+                                        filled: true,
+                                        prefixIcon: Icon(
+                                          FontAwesomeIcons.userAlt,
+                                          color: Colors.grey,
+                                          size: 15.0,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                                Expanded(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: TextFormField(
+                                      controller: _firstNameController,
+                                      textInputAction: TextInputAction.next,
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return 'Please Enter a name';
+                                        }
+
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                        labelText: 'Last Name',
+                                        labelStyle: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 15,
+                                        ),
+                                        border: InputBorder.none,
+                                        fillColor: Colors.grey[100],
+                                        filled: true,
+                                        prefixIcon: Icon(
+                                          FontAwesomeIcons.userAlt,
+                                          color: Colors.grey,
+                                          size: 15.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             SizedBox(
                               height: 8.0,

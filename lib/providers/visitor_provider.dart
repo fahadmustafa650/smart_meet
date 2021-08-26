@@ -30,7 +30,8 @@ class Visitors with ChangeNotifier {
     this.imageList = imageList;
     _visitor = Visitor(
       id: visitorData['user']['id'].toString(),
-      name: visitorData['user']['name'].toString(),
+      firstName: visitorData['user']['firstName'].toString(),
+      lastName: visitorData['user']['lastName'].toString(),
       username: visitorData['user']['username'].toString(),
       email: email,
       dateOfBirth: DateTime.tryParse(visitorData['user']['dateOfBirth']),

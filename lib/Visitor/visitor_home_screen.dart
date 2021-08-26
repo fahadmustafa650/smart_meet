@@ -58,7 +58,7 @@ class _VisitorHomeScreenState extends State<VisitorHomeScreen> {
                 backgroundColor: Colors.white,
               )
             : Text(
-                visitorData.name,
+                ('${visitorData.firstName} ${visitorData.lastName}'),
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
         centerTitle: true,
@@ -148,9 +148,11 @@ class _VisitorHomeScreenState extends State<VisitorHomeScreen> {
                   accountEmail: visitorData.email == null
                       ? CircularProgressIndicator()
                       : Text(visitorData.email),
-                  accountName: visitorData.name == null
+                  accountName: visitorData.firstName == null ||
+                          visitorData.lastName == null
                       ? CircularProgressIndicator()
-                      : Text(visitorData.name),
+                      : Text(
+                          '${visitorData.firstName} ${visitorData.lastName}'),
                   currentAccountPicture: CircleAvatar(
                     radius: 100,
                     backgroundImage: MemoryImage(visitorData.image),

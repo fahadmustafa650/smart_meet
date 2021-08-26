@@ -196,7 +196,8 @@ class _EditProfileFormState extends State<EditProfileForm> {
               obscureText: false,
               style: loginTextFieldsStyles,
               //controller: _nameController,
-              initialValue: visitorData.getVisitor.name,
+              initialValue:
+                  '${visitorData.getVisitor.firstName} ${visitorData.getVisitor.lastName}',
               validator: (value) {
                 if (value.isEmpty) {
                   return "Please Enter Text";

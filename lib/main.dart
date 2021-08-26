@@ -79,7 +79,7 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         // home: ShowImage(),
-        home: CustomSplashScreen(),
+        home: VisitorSignUpScreen(),
         // initialRoute: VisitorHomeScreen.id,
         routes: {
           AppointmentRequestsScreen.id: (context) =>
