@@ -3,8 +3,8 @@ import 'package:smart_meet/widgets/custom_stepper.dart';
 
 import 'facial_recognition_step3.dart';
 
-class TemperatureDetectionStep2 extends StatelessWidget {
-  static final id = '/temperature_detection_step2';
+class TemperatureDetectionStep3 extends StatelessWidget {
+  static final id = '/temperature_detection_step3';
 
   @override
   Widget build(BuildContext context) {

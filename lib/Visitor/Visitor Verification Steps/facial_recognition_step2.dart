@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:smart_meet/Visitor/Device%20steps/temperature_detector_step2.dart';
 import 'package:smart_meet/widgets/custom_stepper.dart';
 
-import 'facial_recognition_step2.dart';
-import 'temperature_detector_step3.dart';
+import 'mask_detection_step4.dart';
 
-class ScanQRCodeStep1 extends StatelessWidget {
-  static final id = '/scan_qrcode_step1';
+class FacialRecognitionStep2 extends StatelessWidget {
+  static final id = '/facial_recgonition_step3';
 
   @override
   Widget build(BuildContext context) {
@@ -14,13 +14,13 @@ class ScanQRCodeStep1 extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlueAccent,
-        title: Text('QR Code Vertification Step'),
+        title: Text('Facial Recognition Step'),
         centerTitle: true,
         actions: [
           IconButton(
               icon: Icon(Icons.forward, color: Colors.white),
               onPressed: () {
-                Navigator.pushNamed(context, FacialRecognitionStep2.id);
+                Navigator.pushNamed(context, TemperatureDetectionStep3.id);
               })
         ],
       ),
@@ -31,7 +31,7 @@ class ScanQRCodeStep1 extends StatelessWidget {
               height: screenHeight * 0.1,
             ),
             CustomStepper(
-              stepNo: 1,
+              stepNo: 2,
             ),
             SizedBox(
               height: screenHeight * 0.1,
@@ -39,7 +39,7 @@ class ScanQRCodeStep1 extends StatelessWidget {
             Container(
               margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
               child: Text(
-                'Scan QR Code from your Device',
+                'Please Click on the Camera & Scan your face',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 25,
@@ -48,15 +48,12 @@ class ScanQRCodeStep1 extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: screenHeight * 0.05,
+              height: screenHeight * 0.1,
             ),
-            Image(
-              width: screenWidth * 0.6,
-              height: screenHeight * 0.4,
-              image: AssetImage('assets/images/QR_Code.png'),
-            ),
-            SizedBox(
-              height: screenHeight * 0.02,
+            Icon(
+              Icons.camera_alt,
+              color: Colors.black,
+              size: 100,
             ),
           ],
         ),

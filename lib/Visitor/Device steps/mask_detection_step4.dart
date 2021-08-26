@@ -28,21 +28,13 @@ class MaskDetectionStep4 extends StatelessWidget {
           Container(
             margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
             child: Text(
-              'Make Sure to wear a Mask and put your Face infront of device Camera',
+              'Make Sure to wear a Mask and put your Face infront of Tablet Camera',
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
                   color: Colors.blue),
             ),
-          ),
-          SizedBox(
-            height: screenHeight * 0.1,
-          ),
-          Icon(
-            Icons.camera_alt,
-            color: Colors.black,
-            size: 100,
           ),
         ],
       ),

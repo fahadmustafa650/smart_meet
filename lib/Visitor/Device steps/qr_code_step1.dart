@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_meet/widgets/custom_stepper.dart';
 
-import 'facial_recognition_step2.dart';
-import 'temperature_detector_step3.dart';
+import 'temperature_detector_step2.dart';
 
 class ScanQRCodeStep1 extends StatelessWidget {
   static final id = '/scan_qrcode_step1';
@@ -20,7 +19,7 @@ class ScanQRCodeStep1 extends StatelessWidget {
           IconButton(
               icon: Icon(Icons.forward, color: Colors.white),
               onPressed: () {
-                Navigator.pushNamed(context, FacialRecognitionStep2.id);
+                Navigator.pushNamed(context, TemperatureDetectionStep3.id);
               })
         ],
       ),
@@ -39,7 +38,7 @@ class ScanQRCodeStep1 extends StatelessWidget {
             Container(
               margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
               child: Text(
-                'Scan QR Code from your Device',
+                'Scan QR Code with Visitor Device',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 25,
@@ -51,9 +50,9 @@ class ScanQRCodeStep1 extends StatelessWidget {
               height: screenHeight * 0.05,
             ),
             Image(
-              width: screenWidth * 0.6,
-              height: screenHeight * 0.4,
-              image: AssetImage('assets/images/QR_Code.png'),
+              width: screenWidth * 0.5,
+              height: screenHeight * 0.35,
+              image: AssetImage('assets/images/qr_code_img.png'),
             ),
             SizedBox(
               height: screenHeight * 0.02,

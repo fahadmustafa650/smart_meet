@@ -1,13 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_meet/Constants/constants.dart';
-import 'package:smart_meet/Visitor/visitor_profile_screen.dart';
-import 'package:smart_meet/screens/forget_password_screen.dart';
+import 'package:smart_meet/Employee/employee_screens/emp_sign_up_screen.dart';
+import 'package:smart_meet/Employee/employee_screens/employee_profile_screen.dart';
+import 'package:smart_meet/Visitor/visitor_home_screen.dart';
+import 'package:smart_meet/screens/enter_email_screen.dart';
+import 'package:smart_meet/screens/new_password_screen.dart';
 import 'package:smart_meet/widgets/login_with_fb.dart';
 import 'package:smart_meet/widgets/login_with_google.dart';
-
-import 'emp_sign_up_screen.dart';
-import 'employee_profile_screen.dart';
+import 'package:http/http.dart' as http;
 
 class EmployeeSignInScreen extends StatefulWidget {
   static final id = '/employee_sign_in';
@@ -19,6 +22,30 @@ class EmployeeSignInScreen extends StatefulWidget {
 }
 
 class _EmployeeSignInScreenState extends State<EmployeeSignInScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  void signIn() async {
+    final url = Uri.parse(
+        'https://pure-woodland-42301.herokuapp.com/api/visitor/signin');
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, String>{
+          'email': _emailController.text,
+          'password': _passwordController.text
+        }),
+      );
+      print(response.statusCode);
+      Navigator.pushNamed(context, VisitorHomeScreen.id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget resgisterButton() {
@@ -46,6 +73,27 @@ class _EmployeeSignInScreenState extends State<EmployeeSignInScreen> {
       );
     }
 
+    final signInBtn = Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          color: Colors.lightBlueAccent,
+        ),
+        height: 40.0,
+        child: TextButton(
+            onPressed: () {
+              Navigator.pushNamed(context, EmployeeHomeScreen.id);
+            },
+            child: Center(
+              child: FittedBox(
+                child: Text(
+                  'Login',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            )));
+
     return Scaffold(
       backgroundColor: Colors.lightBlueAccent,
       appBar: AppBar(
@@ -66,24 +114,44 @@ class _EmployeeSignInScreenState extends State<EmployeeSignInScreen> {
               padding: EdgeInsets.symmetric(horizontal: 10.0),
               color: Colors.white,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(height: 20.0),
-                  emailTextField(),
-                  SizedBox(height: 25.0),
-                  passwordField(),
-                  SizedBox(height: 5.0),
-                  forgetPasswordBtn(),
-                  SizedBox(
-                    height: 20.0,
+                  Text(
+                    'Login',
+                    style: TextStyle(
+                      color: Colors.lightBlueAccent,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  loginBtn(context),
+                  SizedBox(height: 10.0),
+                  Card(color: Color(0XFFede8e8), child: emailTextField()),
+                  SizedBox(height: 25.0),
+                  Card(color: Color(0XFFede8e8), child: passwordField()),
+                  SizedBox(height: 5.0),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: GestureDetector(
+                      onTap: () {
+                        //TODO: Forgot Passwoed button pressed
+                        Navigator.pushNamed(context, EnterEmailScreen.id);
+                      },
+                      child: Text(
+                        'Forget Password?',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 23.0,
+                  ),
+                  signInBtn,
                   SizedBox(
                     height: 13.0,
                   ),
                   resgisterButton(),
                   SizedBox(
-                    height: 15,
+                    height: 13.0,
                   ),
                   Text(
                     'OR Continue with',
@@ -99,29 +167,10 @@ class _EmployeeSignInScreenState extends State<EmployeeSignInScreen> {
                       LoginWithGoogleBtn(),
                     ],
                   ),
-                  SizedBox(
-                    height: 50.0,
-                  ),
                 ],
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Align forgetPasswordBtn() {
-    return Align(
-      alignment: Alignment.topRight,
-      child: GestureDetector(
-        onTap: () {
-          //TODO: Forgot Passwoed button pressed
-          Navigator.pushNamed(context, ForgetPasswordScreen.id);
-        },
-        child: Text(
-          'Forget Password?',
-          style: TextStyle(color: Colors.grey[600]),
         ),
       ),
     );
@@ -133,6 +182,7 @@ class _EmployeeSignInScreenState extends State<EmployeeSignInScreen> {
       height: 60,
       child: TextFormField(
         obscureText: false,
+        controller: _emailController,
         style: loginTextFieldsStyles,
         decoration: InputDecoration(
           labelText: "Email",
@@ -152,6 +202,7 @@ class _EmployeeSignInScreenState extends State<EmployeeSignInScreen> {
       height: 60,
       child: TextFormField(
         obscureText: true,
+        controller: _passwordController,
         style: loginTextFieldsStyles,
         decoration: InputDecoration(
             border: InputBorder.none,
@@ -164,28 +215,5 @@ class _EmployeeSignInScreenState extends State<EmployeeSignInScreen> {
             suffixIcon: Icon(Icons.remove_red_eye)),
       ),
     );
-  }
-
-  Container loginBtn(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          color: Colors.lightBlueAccent,
-        ),
-        height: 40.0,
-        child: TextButton(
-            onPressed: () {
-              Navigator.pushNamed(context, EmployeeProfileScreen.id);
-            },
-            child: Center(
-              child: FittedBox(
-                child: Text(
-                  'Login',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            )));
   }
 }

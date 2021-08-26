@@ -1,8 +1,29 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:smart_meet/screens/otp_screen.dart';
+import 'package:http/http.dart' as http;
+import 'new_password_screen.dart';
+import 'package:http/http.dart';
 
-class ForgetPasswordScreen extends StatelessWidget {
-  static final id = '/forget_password_screen';
+class EnterEmailScreen extends StatefulWidget {
+  static final id = '/enter_email_screen';
+
+  @override
+  _EnterEmailScreenState createState() => _EnterEmailScreenState();
+}
+
+class _EnterEmailScreenState extends State<EnterEmailScreen> {
+  final _emailController = TextEditingController();
+
+  void goToNewPasswordScreen() {
+    Navigator.push(context, MaterialPageRoute(builder: (ctx) {
+      return NewPasswordScreen(
+        email: _emailController.text.toString(),
+      );
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -50,10 +71,12 @@ class ForgetPasswordScreen extends StatelessWidget {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
       child: TextFormField(
+        controller: _emailController,
         decoration: InputDecoration(
-            labelText: 'Type Your Email',
-            contentPadding: EdgeInsets.symmetric(horizontal: 5),
-            labelStyle: TextStyle(color: Colors.grey, fontSize: 16)),
+          labelText: 'Type Your Email',
+          contentPadding: EdgeInsets.symmetric(horizontal: 5),
+          labelStyle: TextStyle(color: Colors.grey, fontSize: 16),
+        ),
       ),
     );
   }
@@ -61,7 +84,7 @@ class ForgetPasswordScreen extends StatelessWidget {
   GestureDetector sendBtn(BuildContext context, double screenWidth) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, OtpScreen.id);
+        _isEmailExist();
       },
       child: Container(
         width: screenWidth * 0.35,
@@ -81,5 +104,28 @@ class ForgetPasswordScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _isEmailExist() async {
+    final url = Uri.parse(
+        'https://pure-woodland-42301.herokuapp.com/api/visitor/verifyemail/${_emailController.text.toString()}');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (ctx) {
+              return OtpScreen(
+                email: _emailController.text.toString(),
+                addAllData: goToNewPasswordScreen,
+              );
+            },
+          ),
+        );
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 }

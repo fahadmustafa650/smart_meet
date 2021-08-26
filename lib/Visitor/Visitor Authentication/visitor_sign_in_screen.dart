@@ -1,22 +1,61 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_meet/Constants/constants.dart';
-import 'package:smart_meet/Visitor/visitor_profile_screen.dart';
-import 'package:smart_meet/screens/forget_password_screen.dart';
+import 'package:smart_meet/Visitor/visitor_home_screen.dart';
+import 'package:smart_meet/providers/visitor_provider.dart';
+import 'package:smart_meet/screens/enter_email_screen.dart';
 import 'package:smart_meet/widgets/login_with_fb.dart';
 import 'package:smart_meet/widgets/login_with_google.dart';
 import 'visitor_sign_up_screen.dart';
+import 'package:http/http.dart' as http;
 
 class VisitorSignInScreen extends StatefulWidget {
   static final id = '/visitor_sign_in';
-  final String title;
-  VisitorSignInScreen({Key key, this.title}) : super(key: key);
-
+  VisitorSignInScreen({Key key}) : super(key: key);
   @override
   _VisitorSignInScreenState createState() => _VisitorSignInScreenState();
 }
 
 class _VisitorSignInScreenState extends State<VisitorSignInScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _isLoading = false;
+  void signIn() async {
+    final url = Uri.parse(
+        'https://pure-woodland-42301.herokuapp.com/api/visitor/signin');
+
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, String>{
+          'email': _emailController.text,
+          'password': _passwordController.text,
+        }),
+      );
+      print(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        setVisitingFlag();
+        setState(() {
+          _isLoading = false;
+        });
+
+        Navigator.pushNamed(context, VisitorHomeScreen.id,
+            arguments: {'email': _emailController.text.toString()});
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget resgisterButton() {
@@ -51,17 +90,22 @@ class _VisitorSignInScreenState extends State<VisitorSignInScreen> {
         ),
         height: 40.0,
         child: TextButton(
-            onPressed: () {
-              Navigator.pushNamed(context, VisitorProfileScreen.id);
+            onPressed: () async {
+              signIn();
+              // Navigator.pushNamed(context, VisitorHomeScreen.id);
             },
             child: Center(
               child: FittedBox(
-                child: Text(
-                  'Login',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
+                child: !_isLoading
+                    ? Text(
+                        'Login',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      )
+                    : CircularProgressIndicator(
+                        backgroundColor: Colors.white,
+                      ),
               ),
             )));
 
@@ -105,7 +149,7 @@ class _VisitorSignInScreenState extends State<VisitorSignInScreen> {
                     child: GestureDetector(
                       onTap: () {
                         //TODO: Forgot Passwoed button pressed
-                        Navigator.pushNamed(context, ForgetPasswordScreen.id);
+                        Navigator.pushNamed(context, EnterEmailScreen.id);
                       },
                       child: Text(
                         'Forget Password?',
@@ -153,6 +197,7 @@ class _VisitorSignInScreenState extends State<VisitorSignInScreen> {
       height: 60,
       child: TextFormField(
         obscureText: false,
+        controller: _emailController,
         style: loginTextFieldsStyles,
         decoration: InputDecoration(
           labelText: "Email",
@@ -172,6 +217,7 @@ class _VisitorSignInScreenState extends State<VisitorSignInScreen> {
       height: 60,
       child: TextFormField(
         obscureText: true,
+        controller: _passwordController,
         style: loginTextFieldsStyles,
         decoration: InputDecoration(
             border: InputBorder.none,
@@ -184,5 +230,17 @@ class _VisitorSignInScreenState extends State<VisitorSignInScreen> {
             suffixIcon: Icon(Icons.remove_red_eye)),
       ),
     );
+  }
+
+  void setVisitingFlag() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setBool('alreadyVisited', true);
+    print(preferences);
+  }
+
+  Future<bool> getVisitingFlag() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    bool alreadyVisited = preferences.getBool('alreadyVisited') ?? false;
+    return alreadyVisited;
   }
 }

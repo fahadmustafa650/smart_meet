@@ -1,15 +1,149 @@
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'dart:typed_data';
+
+import 'package:email_auth/email_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' as http;
 import 'package:smart_meet/Constants/constants.dart';
+import 'package:smart_meet/Visitor/Visitor%20Authentication/visitor_sign_in_screen.dart';
+import 'package:smart_meet/models/visitor_model.dart';
 
 import 'new_password_screen.dart';
 
-class OtpScreen extends StatelessWidget {
+class OtpScreen extends StatefulWidget {
   static final id = '/otp_screen';
+  final String email;
+  final Function addAllData;
+  // final Visitor visitor;
+  // const OtpScreen({@required this.visitor});
+  const OtpScreen({@required this.email, @required this.addAllData});
+  @override
+  _OtpScreenState createState() => _OtpScreenState();
+}
+
+class _OtpScreenState extends State<OtpScreen> {
+  int timeValue = 30;
+  String otpCode = '';
+  //FOCUS NODES
+  FocusNode pin1FocusNode;
+  FocusNode pin2FocusNode;
+  FocusNode pin3FocusNode;
+  FocusNode pin4FocusNode;
+  FocusNode pin5FocusNode;
+  FocusNode pin6FocusNode;
+  //CircleAvatars background Color
+  Color circlePinColor1 = Colors.white;
+  Color circlePinColor2 = Colors.white;
+  Color circlePinColor3 = Colors.white;
+  Color circlePinColor4 = Colors.white;
+  Color circlePinColor5 = Colors.white;
+  Color circlePinColor6 = Colors.white;
+  //Controllers Digit
+  final circlePin1Controller = TextEditingController();
+  final circlePin2Controller = TextEditingController();
+  final circlePin3Controller = TextEditingController();
+  final circlePin4Controller = TextEditingController();
+  final circlePin5Controller = TextEditingController();
+  final circlePin6Controller = TextEditingController();
+
+  void clearAll() {
+    setState(() {
+      otpCode = '';
+      circlePinColor1 = Colors.white;
+      circlePinColor2 = Colors.white;
+      circlePinColor3 = Colors.white;
+      circlePinColor4 = Colors.white;
+      circlePinColor5 = Colors.white;
+      circlePinColor6 = Colors.white;
+      circlePin1Controller.clear();
+      circlePin2Controller.clear();
+      circlePin3Controller.clear();
+      circlePin4Controller.clear();
+      circlePin5Controller.clear();
+      circlePin6Controller.clear();
+      FocusScope.of(context).requestFocus(pin1FocusNode);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    sendOtpRequest();
+    pin1FocusNode = FocusNode();
+    pin2FocusNode = FocusNode();
+    pin3FocusNode = FocusNode();
+    pin4FocusNode = FocusNode();
+    pin5FocusNode = FocusNode();
+    pin6FocusNode = FocusNode();
+  }
+
+  void changeCircleColor(FocusNode focusNode) {
+    if (focusNode == pin2FocusNode) {
+      setState(() {
+        circlePinColor1 = darkBlueColor;
+      });
+    } else if (focusNode == pin3FocusNode) {
+      setState(() {
+        circlePinColor2 = darkBlueColor;
+      });
+    } else if (focusNode == pin4FocusNode) {
+      setState(() {
+        circlePinColor3 = darkBlueColor;
+      });
+    } else if (focusNode == pin5FocusNode) {
+      setState(() {
+        circlePinColor4 = darkBlueColor;
+      });
+    } else if (focusNode == pin6FocusNode) {
+      setState(() {
+        circlePinColor5 = darkBlueColor;
+      });
+    } else {
+      setState(() {
+        circlePinColor6 = darkBlueColor;
+      });
+    }
+  }
+
+  void nextField(String value, FocusNode focusNode) {
+    if (value.length == 1) {
+      setState(() {
+        focusNode.requestFocus();
+        changeCircleColor(focusNode);
+      });
+    } else if (value.length == 0) {
+      focusNode.unfocus();
+      focusNode.previousFocus();
+    }
+  }
+
+  void sendOtpRequest() {
+    print('myEmail=${widget.email}');
+    EmailAuth.sessionName = 'Visitor Session';
+    EmailAuth.sendOtp(receiverMail: widget.email);
+  }
+
+  void verifyOtpRequest() {
+    var result = EmailAuth.validate(
+      receiverMail: widget.email,
+      userOTP: otpCode,
+    );
+    if (timeValue <= 0) {
+      print('Time Passed');
+    }
+    if (result) {
+      print('otp verified');
+      widget.addAllData();
+    } else {
+      print('Otp Wrong');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     // final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -38,6 +172,11 @@ class OtpScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Container(
+              //   height: 100,
+              //   width: 100,
+              //   child: Image.file(widget.visitor.image),
+              // ),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                 child: Text(
@@ -62,7 +201,153 @@ class OtpScreen extends StatelessWidget {
               SizedBox(
                 height: 25,
               ),
-              OtpForm(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: circlePinColor1,
+                    radius: 30,
+                    child: TextFormField(
+                      autofocus: true,
+                      controller: circlePin1Controller,
+                      focusNode: pin1FocusNode,
+                      //obscureText: true,
+                      style: TextStyle(fontSize: 24, color: Colors.white),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      decoration: otpInputDecoration,
+                      onChanged: (value) {
+                        otpCode += value;
+                        setState(() {
+                          circlePinColor1 = darkBlueColor;
+                          nextField(value, pin2FocusNode);
+                        });
+
+                        // Then you need to check is the code is correct or not
+                      },
+                    ),
+                  ),
+                  CircleAvatar(
+                    backgroundColor: circlePinColor2,
+                    radius: 30,
+                    child: TextFormField(
+                      autofocus: true,
+                      // obscureText: true,
+                      controller: circlePin2Controller,
+                      focusNode: pin2FocusNode,
+                      style: TextStyle(fontSize: 24, color: Colors.white),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      decoration: otpInputDecoration,
+                      onChanged: (value) {
+                        otpCode += value;
+                        pin2FocusNode.unfocus();
+                        otpCode.indexOf(value);
+
+                        setState(() {
+                          circlePinColor2 = darkBlueColor;
+                          nextField(value, pin3FocusNode);
+                        });
+                        // Then you need to check is the code is correct or not
+                      },
+                    ),
+                  ),
+                  CircleAvatar(
+                    backgroundColor: circlePinColor3,
+                    radius: 30,
+                    child: TextFormField(
+                      autofocus: true,
+                      //obscureText: true,
+                      controller: circlePin3Controller,
+                      focusNode: pin3FocusNode,
+                      style: TextStyle(fontSize: 24, color: Colors.white),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      decoration: otpInputDecoration,
+                      onChanged: (value) {
+                        if (value.length == 1) otpCode += value;
+
+                        pin3FocusNode.unfocus();
+                        setState(() {
+                          circlePinColor3 = darkBlueColor;
+                          nextField(value, pin4FocusNode);
+                        });
+                        // Then you need to check is the code is correct or not
+                      },
+                    ),
+                  ),
+                  CircleAvatar(
+                    backgroundColor: circlePinColor4,
+                    radius: 30,
+                    child: TextFormField(
+                      autofocus: true,
+                      //obscureText: true,
+                      controller: circlePin4Controller,
+                      focusNode: pin4FocusNode,
+                      style: TextStyle(fontSize: 24, color: Colors.white),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      decoration: otpInputDecoration,
+                      onChanged: (value) {
+                        otpCode += value;
+
+                        pin4FocusNode.unfocus();
+                        setState(() {
+                          circlePinColor4 = darkBlueColor;
+                        });
+                        nextField(value, pin5FocusNode);
+                        // Then you need to check is the code is correct or not
+                      },
+                    ),
+                  ),
+                  CircleAvatar(
+                    backgroundColor: circlePinColor5,
+                    radius: 30,
+                    child: TextFormField(
+                      autofocus: true,
+                      controller: circlePin5Controller,
+                      focusNode: pin5FocusNode,
+                      style: TextStyle(fontSize: 24, color: Colors.white),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      decoration: otpInputDecoration,
+                      onChanged: (value) {
+                        otpCode += value;
+
+                        pin5FocusNode.unfocus();
+                        setState(() {
+                          circlePinColor5 = darkBlueColor;
+                        });
+                        nextField(value, pin6FocusNode);
+                      },
+                    ),
+                  ),
+                  CircleAvatar(
+                    backgroundColor: circlePinColor6,
+                    radius: 30,
+                    child: TextFormField(
+                      autofocus: true,
+                      //obscureText: true,
+                      focusNode: pin6FocusNode,
+                      controller: circlePin6Controller,
+                      style: TextStyle(fontSize: 24, color: Colors.white),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      decoration: otpInputDecoration,
+                      onChanged: (value) {
+                        otpCode += value;
+
+                        // pin6FocusNode.unfocus();
+                        setState(() {
+                          circlePinColor6 = darkBlueColor;
+                        });
+
+                        //nextField(value, pin6FocusNode);
+                      },
+                    ),
+                  ),
+                ],
+              ),
               SizedBox(
                 height: 10,
               ),
@@ -96,15 +381,16 @@ class OtpScreen extends StatelessWidget {
   GestureDetector sendBtn(BuildContext context, double screenWidth) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, NewPasswordScreen.id);
+        verifyOtpRequest();
       },
       child: Container(
         width: screenWidth * 0.35,
         height: 40,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white, width: 1.5),
-            color: Colors.blue[700]),
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: Colors.white, width: 1.5),
+          color: Colors.blue[700],
+        ),
         child: Center(
           child: Text(
             'Send',
@@ -120,7 +406,10 @@ class OtpScreen extends StatelessWidget {
 
   GestureDetector resendCodeBtn() {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        sendOtpRequest();
+        clearAll();
+      },
       child: Container(
         //alignment: Alignment.topLeft,
         child: Text(
@@ -135,180 +424,15 @@ class OtpScreen extends StatelessWidget {
 
   Widget buildTimer() {
     return TweenAnimationBuilder(
-      tween: Tween(begin: 30.0, end: 0.0),
-      duration: Duration(seconds: 30),
-      builder: (_, value, child) => Text(
-        "00:${value.toInt()}",
-        style: TextStyle(color: Colors.white, fontSize: 18),
-      ),
-    );
-  }
-}
-
-class OtpForm extends StatefulWidget {
-  @override
-  _OtpFormState createState() => _OtpFormState();
-}
-
-class _OtpFormState extends State<OtpForm> {
-  FocusNode pin2FocusNode;
-  FocusNode pin3FocusNode;
-  FocusNode pin4FocusNode;
-
-  //CircleAvatars background Color
-  Color circlePinColor1 = Colors.white;
-  Color circlePinColor2 = Colors.white;
-  Color circlePinColor3 = Colors.white;
-  Color circlePinColor4 = Colors.white;
-  @override
-  void initState() {
-    super.initState();
-    pin2FocusNode = FocusNode();
-    pin3FocusNode = FocusNode();
-    pin4FocusNode = FocusNode();
-  }
-
-  void changeCircleColor(FocusNode focusNode) {
-    if (focusNode == pin2FocusNode) {
-      setState(() {
-        circlePinColor1 = darkBlueColor;
-      });
-    } else if (focusNode == pin3FocusNode) {
-      setState(() {
-        circlePinColor2 = darkBlueColor;
-      });
-    } else if (focusNode == pin4FocusNode) {
-      setState(() {
-        circlePinColor3 = darkBlueColor;
-      });
-    } else {
-      setState(() {
-        circlePinColor4 = darkBlueColor;
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    pin2FocusNode.dispose();
-    pin3FocusNode.dispose();
-    pin4FocusNode.dispose();
-  }
-
-  void nextField(String value, FocusNode focusNode) {
-    if (value.length == 1) {
-      setState(() {
-        focusNode.requestFocus();
-        changeCircleColor(focusNode);
-      });
-
-      // Switch(){
-      //   case focusNode==
-      // }
-    }
-  }
-
-  GestureDetector sendBtn(BuildContext context, double screenWidth) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, OtpScreen.id);
-      },
-      child: Container(
-        width: screenWidth * 0.35,
-        height: 40,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white, width: 1.5),
-            color: Colors.blue[700]),
-        child: Center(
-          child: Text(
-            'Send',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        CircleAvatar(
-          backgroundColor: circlePinColor1,
-          radius: 30,
-          child: TextFormField(
-            autofocus: true,
-            //obscureText: true,
-            style: TextStyle(fontSize: 24, color: Colors.white),
-            keyboardType: TextInputType.number,
-            textAlign: TextAlign.center,
-            decoration: otpInputDecoration,
-            onChanged: (value) {
-              nextField(value, pin2FocusNode);
-            },
-          ),
-        ),
-        CircleAvatar(
-          backgroundColor: circlePinColor2,
-          radius: 30,
-          child: TextFormField(
-            autofocus: true,
-            // obscureText: true,
-            focusNode: pin2FocusNode,
-            style: TextStyle(fontSize: 24, color: Colors.white),
-            keyboardType: TextInputType.number,
-            textAlign: TextAlign.center,
-            decoration: otpInputDecoration,
-            onChanged: (value) {
-              nextField(value, pin3FocusNode);
-            },
-          ),
-        ),
-        CircleAvatar(
-          backgroundColor: circlePinColor3,
-          radius: 30,
-          child: TextFormField(
-            autofocus: true,
-            //obscureText: true,
-            focusNode: pin3FocusNode,
-            style: TextStyle(fontSize: 24, color: Colors.white),
-            keyboardType: TextInputType.number,
-            textAlign: TextAlign.center,
-            decoration: otpInputDecoration,
-            onChanged: (value) {
-              nextField(value, pin4FocusNode);
-            },
-          ),
-        ),
-        CircleAvatar(
-          backgroundColor: circlePinColor4,
-          radius: 30,
-          child: TextFormField(
-            autofocus: true,
-            //obscureText: true,
-            focusNode: pin4FocusNode,
-            style: TextStyle(fontSize: 24, color: Colors.white),
-            keyboardType: TextInputType.number,
-            textAlign: TextAlign.center,
-            decoration: otpInputDecoration,
-            onChanged: (value) {
-              if (value.length == 1) {
-                pin4FocusNode.unfocus();
-                setState(() {
-                  circlePinColor4 = darkBlueColor;
-                });
-                // Then you need to check is the code is correct or not
-              }
-            },
-          ),
-        ),
-      ],
-    );
+        tween: Tween(begin: 90.0, end: 0.0),
+        duration: Duration(seconds: 90),
+        builder: (_, value, child) {
+          timeValue = value.toInt();
+          // print(timeValue);
+          return Text(
+            "00:${value.toInt()}",
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          );
+        });
   }
 }

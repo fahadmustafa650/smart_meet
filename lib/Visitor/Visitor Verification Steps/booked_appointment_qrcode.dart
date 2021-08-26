@@ -4,8 +4,8 @@ import 'package:smart_meet/widgets/custom_stepper.dart';
 import 'facial_recognition_step2.dart';
 import 'temperature_detector_step3.dart';
 
-class ScanQRCodeStep1 extends StatelessWidget {
-  static final id = '/scan_qrcode_step1';
+class BookedAppointmentQRCode extends StatelessWidget {
+  static final id = '/booked_appointment_qr';
 
   @override
   Widget build(BuildContext context) {
@@ -14,15 +14,16 @@ class ScanQRCodeStep1 extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlueAccent,
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
         title: Text('QR Code Vertification Step'),
         centerTitle: true,
-        actions: [
-          IconButton(
-              icon: Icon(Icons.forward, color: Colors.white),
-              onPressed: () {
-                Navigator.pushNamed(context, FacialRecognitionStep2.id);
-              })
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -30,16 +31,10 @@ class ScanQRCodeStep1 extends StatelessWidget {
             SizedBox(
               height: screenHeight * 0.1,
             ),
-            CustomStepper(
-              stepNo: 1,
-            ),
-            SizedBox(
-              height: screenHeight * 0.1,
-            ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
               child: Text(
-                'Scan QR Code from your Device',
+                'Scan this QR Code on the Reception Device',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 25,

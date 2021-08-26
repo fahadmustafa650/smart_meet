@@ -1,44 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:smart_meet/Visitor/Visitor%20Verification%20Steps/booked_appointment_qrcode.dart';
 
 import 'reserve_spot_employee_screen.dart';
 import 'search_employee_screen.dart';
 
-class EmployeeSearchResultScreen extends StatefulWidget {
-  static final id = '/employee_book_appointment';
+class BookedAppointmentsScreen extends StatefulWidget {
+  static final id = '/booked_appointment_result';
   @override
-  _EmployeeSearchResultScreenState createState() =>
-      _EmployeeSearchResultScreenState();
+  _BookedAppointmentsScreenState createState() =>
+      _BookedAppointmentsScreenState();
 }
 
-class _EmployeeSearchResultScreenState
-    extends State<EmployeeSearchResultScreen> {
+class _BookedAppointmentsScreenState extends State<BookedAppointmentsScreen> {
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    // final screenWidth = MediaQuery.of(context).size.width;
+    // final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search Result'),
+        title: Text('Booked Appointments'),
         centerTitle: true,
       ),
       body: ListView(
         children: [
-          EmployeeInfoContainer(
+          EmployeeBookedInfoContainer(
             employeeName: 'Abdullah Shahid',
             jobTitle: 'Job Name',
             imageFileName: 'profilepic.jpeg',
           ),
-          EmployeeInfoContainer(
+          EmployeeBookedInfoContainer(
             employeeName: 'Abdullah Shahid',
             jobTitle: 'Job Name',
             imageFileName: 'profilepic.jpeg',
           ),
-          EmployeeInfoContainer(
+          EmployeeBookedInfoContainer(
             employeeName: 'Abdullah Shahid',
             jobTitle: 'Job Name',
             imageFileName: 'profilepic.jpeg',
           ),
-          EmployeeInfoContainer(
+          EmployeeBookedInfoContainer(
             employeeName: 'Abdullah Shahid',
             jobTitle: 'Job Name',
             imageFileName: 'profilepic.jpeg',
@@ -49,11 +49,11 @@ class _EmployeeSearchResultScreenState
   }
 }
 
-class EmployeeInfoContainer extends StatelessWidget {
+class EmployeeBookedInfoContainer extends StatelessWidget {
   final String employeeName;
   final String jobTitle;
   final imageFileName;
-  const EmployeeInfoContainer(
+  const EmployeeBookedInfoContainer(
       {Key key,
       @required this.employeeName,
       @required this.jobTitle,
@@ -67,7 +67,7 @@ class EmployeeInfoContainer extends StatelessWidget {
     return Container(
         width: screenWidth * 0.9,
         margin:
-            EdgeInsets.symmetric(horizontal: screenWidth * 0.05, vertical: 10),
+            EdgeInsets.symmetric(horizontal: screenWidth * 0.02, vertical: 10),
         height: 150,
         child: Card(
           elevation: 3,
@@ -90,17 +90,34 @@ class EmployeeInfoContainer extends StatelessWidget {
                         fontSize: 18,
                         fontWeight: FontWeight.w700),
                   ),
-                  Text(
-                    jobTitle,
-                    style: TextStyle(color: Colors.black, fontSize: 14),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        '14 May 2021',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      Text(
+                        '14:30-15:30',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                   SizedBox(
                     height: 20,
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(
-                          context, ReserveEmployeeSpotScreen.id);
+                      Navigator.pushNamed(context, BookedAppointmentQRCode.id);
                     },
                     child: Container(
                       width: screenWidth * 0.45,
@@ -111,7 +128,7 @@ class EmployeeInfoContainer extends StatelessWidget {
                       ),
                       child: Center(
                           child: Text(
-                        'Book an Appointment',
+                        'GET QR CODE',
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       )),
                     ),

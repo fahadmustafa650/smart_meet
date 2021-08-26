@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_meet/Constants/constants.dart';
+import 'package:smart_meet/screens/login_as_screen.dart';
 import 'package:smart_meet/widgets/custom_onboarding_screen.dart';
 
 import 'sign_up_as_screen.dart';
@@ -88,7 +89,7 @@ class _OnBoardingScreensState extends State<OnBoardingScreens> {
     return Expanded(
       flex: 1,
       child: InkWell(
-        onTap: () => Navigator.pushNamed(context, SignUpAsScreen.id),
+        onTap: () => Navigator.pushNamed(context, LoginAsScreen.id),
         child: Container(
           color: Colors.lightBlueAccent,
           child: Center(

@@ -1,9 +1,37 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'password_changed_successfully.dart';
 
 class NewPasswordScreen extends StatelessWidget {
   static final id = '/new_password_screen';
+  final String email;
+  NewPasswordScreen({
+    @required this.email,
+  });
+
+  final _newPassword = TextEditingController();
+  final _newConfirmPassword = TextEditingController();
+  void _updatePassword(BuildContext context) async {
+    final url = Uri.parse(
+        'https://pure-woodland-42301.herokuapp.com/api/forgetPassword');
+    final response = await http.put(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(<String, String>{
+        'email': 'fahad.khalid01234@gmail.com',
+        'newpass': _newPassword.text
+      }),
+    );
+    Navigator.pushNamed(context, PasswordChanged.id);
+    print('upadtePassword');
+    print(response.statusCode);
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -35,6 +63,7 @@ class NewPasswordScreen extends StatelessWidget {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
       child: TextFormField(
+        controller: _newPassword,
         decoration: InputDecoration(
             labelText: 'Enter New Password',
             prefixIcon: Icon(Icons.lock),
@@ -48,7 +77,10 @@ class NewPasswordScreen extends StatelessWidget {
   GestureDetector updateBtn(BuildContext context, double screenWidth) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, PasswordChanged.id);
+        if (_newPassword.text.toString() ==
+            _newConfirmPassword.text.toString()) {
+          _updatePassword(context);
+        }
       },
       child: Container(
         width: screenWidth * 0.7,
@@ -74,7 +106,7 @@ class NewPasswordScreen extends StatelessWidget {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
       child: TextFormField(
-        controller: null,
+        controller: _newConfirmPassword,
         decoration: InputDecoration(
             labelText: 'Confirm New Password',
             prefixIcon: Icon(Icons.lock),

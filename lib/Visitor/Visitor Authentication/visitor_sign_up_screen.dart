@@ -1,33 +1,221 @@
+import 'dart:io' as io;
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:smart_meet/Constants/constants.dart';
+import 'package:smart_meet/Visitor/Visitor%20Authentication/visitor_sign_in_screen.dart';
+
+import 'package:smart_meet/screens/otp_screen.dart';
 import 'package:smart_meet/widgets/login_with_fb.dart';
 import 'package:smart_meet/widgets/login_with_google.dart';
-
-import 'visitor_sign_in_screen.dart';
+import 'package:http/http.dart' as http;
+import 'package:smart_meet/widgets/term_condition.dart';
+import 'package:string_validator/string_validator.dart';
 
 class VisitorSignUpScreen extends StatefulWidget {
-  static final id = '/visitor_sign_up';
+  static final id = '/employee_sign_up';
   @override
   _VisitorSignUpScreenState createState() => _VisitorSignUpScreenState();
 }
 
 class _VisitorSignUpScreenState extends State<VisitorSignUpScreen> {
-  ///VARIABLES
+  //VARIABLES
   final _nameController = TextEditingController();
   final _phoneNumberController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _userNameController = TextEditingController();
-  DateTime _dateTimeSelected;
-  //
+  DateTime _dateOfBirth;
+  var isChecked = false;
+  // formKey
   final _formKey = GlobalKey<FormState>();
+  // File imgFile;
+  io.File _image;
 
+  Future<http.StreamedResponse> _addVisitorData() async {
+    // var multipartFile = http.MultipartFile.fromBytes(, value);
+    Uint8List data = _image.readAsBytesSync();
+    List<int> imageData = data.cast();
+    print(imageData);
+    var multipartFile =
+        http.MultipartFile.fromBytes('avatar', imageData, filename: 'myFile.png'
+            // use the real name if available, or omit
+            //contentType: MediaType('image' 'jpeg'),
+            );
+    final url = Uri.parse(
+        "https://pure-woodland-42301.herokuapp.com/api/visitor/Visitorsignup");
+    var request = http.MultipartRequest('POST', url);
+    request.files.add(multipartFile);
+    print(multipartFile);
+    request.headers.addAll({
+      'Content-Type': 'Multipart/form-data',
+    });
+    print(_nameController.text);
+    print(_emailController.text);
+    print(_userNameController.text);
+    request.fields['name'] = _nameController.text.toString();
+    request.fields['email'] = _emailController.text.toString();
+    request.fields['username'] = _userNameController.text.toString();
+    request.fields['password'] = _passwordController.text.toString();
+    request.fields['dateOfBirth'] = _dateOfBirth.toIso8601String();
+
+    var response = await request.send();
+    print(response.statusCode);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      Fluttertoast.showToast(
+        msg: "Sign Up Successfully",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 5,
+        backgroundColor: Colors.black45,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      Navigator.pushNamed(context, VisitorSignInScreen.id);
+    }
+    return response;
+  }
+
+  Future<int> _isEmailExist(String value) async {
+    final url = Uri.parse(
+        'https://pure-woodland-42301.herokuapp.com/api/visitor/verifyemail/$value');
+    final response = await http.get(url);
+    return response.statusCode;
+  }
+
+  void _showModalBottomSheet(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext buildContext) {
+          return Container(
+            color: Colors.white,
+            height: 100,
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Profile Photo',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold),
+                ),
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        _imgFromGallery();
+                        Navigator.pop(context);
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(Icons.photo, size: 30),
+                          Text(
+                            'Gallery',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        _imgFromCamera();
+                        Navigator.pop(context);
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(
+                            Icons.camera_alt,
+                            size: 30,
+                          ),
+                          Text(
+                            'Camera',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          );
+        });
+  }
+
+  String dateErrorMessage = '';
+  // Submit Data
+  void _submitForm() async {
+    final isValid = _formKey.currentState.validate();
+    if (_dateOfBirth == null) {
+      setState(() {
+        dateErrorMessage = 'Date Not Selected';
+      });
+    }
+    if (_image == null) {
+      setState(() {
+        profilePicError = 'Add Profile Picture';
+      });
+    }
+    if (!isValid || !isChecked || _image == null) {
+      return;
+    }
+    _formKey.currentState.save();
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OtpScreen(
+          email: _emailController.text.toString(),
+          addAllData: _addVisitorData,
+        ),
+      ),
+    );
+  }
+
+  void _imgFromGallery() async {
+    final ImagePicker _picker = ImagePicker();
+    final image = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _image = io.File(image.path);
+    });
+  }
+
+  void _imgFromCamera() async {
+    final ImagePicker _picker = ImagePicker();
+    final image = await _picker.pickImage(source: ImageSource.camera);
+    setState(() {
+      _image = io.File(image.path);
+      profilePicError = '';
+    });
+  }
+
+  var errorPassword = '';
+  var profilePicError = '';
+  bool _isDateSelected = false;
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -60,7 +248,6 @@ class _VisitorSignUpScreenState extends State<VisitorSignUpScreen> {
                           color: Colors.grey[400],
                           spreadRadius: 1.0,
                           blurRadius: 3.0,
-                          // offset: offset,
                         )
                       ],
                     ),
@@ -71,33 +258,331 @@ class _VisitorSignUpScreenState extends State<VisitorSignUpScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             SizedBox(height: 20.0),
-                            CircularProfilePicture(),
+                            Center(
+                              child: GestureDetector(
+                                onTap: () {
+                                  _showModalBottomSheet(context);
+                                },
+                                child: Container(
+                                  width: 128,
+                                  height: 128,
+                                  child: Stack(
+                                    children: <Widget>[
+                                      Align(
+                                        alignment: Alignment.topRight,
+                                        child: GestureDetector(
+                                          onTap: () {},
+                                          child: Icon(
+                                            Icons.camera_alt,
+                                            size: 25,
+                                          ),
+                                        ),
+                                      ),
+                                      CircleAvatar(
+                                        radius: 128,
+                                        backgroundColor: Colors.transparent,
+                                        backgroundImage: _image != null
+                                            ? FileImage(_image)
+                                            : AssetImage(
+                                                'assets/images/blank_pic.jpg'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Text(
+                              _image == null ? profilePicError : '',
+                              style: TextStyle(color: Colors.red),
+                            ),
                             SizedBox(height: 10.0),
-                            nameTextField(),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: TextFormField(
+                                controller: _nameController,
+                                textInputAction: TextInputAction.next,
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Please Enter a name';
+                                  }
+
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  labelText: 'Name',
+                                  labelStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 15,
+                                  ),
+                                  border: InputBorder.none,
+                                  fillColor: Colors.grey[100],
+                                  filled: true,
+                                  prefixIcon: Icon(
+                                    FontAwesomeIcons.userAlt,
+                                    color: Colors.grey,
+                                    size: 15.0,
+                                  ),
+                                ),
+                              ),
+                            ),
                             SizedBox(
                               height: 8.0,
                             ),
-                            userNameTextField(),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: TextFormField(
+                                controller: _userNameController,
+                                textInputAction: TextInputAction.next,
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Please Enter a value';
+                                  } else if (!isAlphanumeric(value)) {
+                                    return 'Username must contain both alpha & numeric characters';
+                                  }
+
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  labelText: 'User Name',
+                                  labelStyle: const TextStyle(
+                                      color: Colors.grey, fontSize: 15),
+                                  border: InputBorder.none,
+                                  fillColor: Colors.grey[100],
+                                  filled: true,
+                                  prefixIcon: const Icon(
+                                    FontAwesomeIcons.userAlt,
+                                    color: Colors.grey,
+                                    size: 15.0,
+                                  ),
+                                ),
+                              ),
+                            ),
                             SizedBox(
                               height: 8.0,
                             ),
-                            emailTextField(),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: TextFormField(
+                                obscureText: false,
+                                style: loginTextFieldsStyles,
+                                textInputAction: TextInputAction.next,
+                                controller: _emailController,
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return "Please Enter Email";
+                                  } else if (!value.contains('@') ||
+                                      !value.contains('.com')) {
+                                    return 'Please Enter valid Email';
+                                  } else if (_isEmailExist(value) == 200) {
+                                    return 'Already Register with this account';
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  fillColor: Colors.grey[100],
+                                  filled: true,
+                                  prefixIcon: Icon(
+                                    Icons.email,
+                                    color: Colors.grey,
+                                  ),
+                                  contentPadding: EdgeInsets.fromLTRB(
+                                      20.0, 15.0, 20.0, 15.0),
+                                  labelText: 'Email',
+                                  labelStyle: TextStyle(
+                                      color: Colors.grey, fontSize: 15),
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
                             SizedBox(
                               height: 8.0,
                             ),
-                            dateOfBirthField(),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: ListTile(
+                                onTap: () async {
+                                  await showDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime(1870),
+                                          lastDate: DateTime.now())
+                                      .then((date) {
+                                    setState(() {
+                                      _dateOfBirth = date;
+                                      _isDateSelected = true;
+                                      // print('date=$_dateOfBirth');
+                                    });
+                                  });
+                                },
+                                tileColor: Colors.grey[100],
+                                leading: Text(
+                                  _dateOfBirth == null
+                                      ? 'Tap To Enter DOB'
+                                      : _dateOfBirth.toString(),
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                trailing: Icon(FontAwesomeIcons.calendarAlt),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 3,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15.0),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  !_isDateSelected ? '' : dateErrorMessage,
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 12.0),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: TextFormField(
+                                controller: _phoneNumberController,
+                                keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.next,
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return "Please Enter Phone No";
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  fillColor: Colors.grey[100],
+                                  filled: true,
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.fromLTRB(
+                                    20.0,
+                                    15.0,
+                                    20.0,
+                                    15.0,
+                                  ),
+                                  labelText: 'Phone No',
+                                  labelStyle: TextStyle(
+                                      color: Colors.grey, fontSize: 15),
+                                  prefixIcon: Icon(
+                                    Icons.phone,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            ),
                             SizedBox(height: 8.0),
-                            phoneNoTextField(),
-                            SizedBox(height: 8.0),
-                            passwordTextField(),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: TextFormField(
+                                obscureText: true,
+                                style: loginTextFieldsStyles,
+                                textInputAction: TextInputAction.next,
+                                keyboardType: TextInputType.visiblePassword,
+                                controller: _passwordController,
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return "Please Enter Password";
+                                  }
+
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                    fillColor: Colors.grey[100],
+                                    filled: true,
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.fromLTRB(
+                                      20.0,
+                                      15.0,
+                                      20.0,
+                                      15.0,
+                                    ),
+                                    labelText: 'Password',
+                                    labelStyle: TextStyle(
+                                        color: Colors.grey, fontSize: 15),
+                                    prefixIcon: Icon(
+                                      Icons.lock_outline,
+                                      color: Colors.grey,
+                                    ),
+                                    suffixIcon: Icon(Icons.remove_red_eye)),
+                              ),
+                            ),
                             SizedBox(height: 5.0),
-                            confirmPasswordField(),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(30),
+                              child: TextFormField(
+                                obscureText: true,
+                                style: loginTextFieldsStyles,
+                                textInputAction: TextInputAction.next,
+                                keyboardType: TextInputType.visiblePassword,
+                                controller: _confirmPasswordController,
+                                onChanged: (value) {
+                                  if (value !=
+                                      _passwordController.text.toString()) {
+                                    setState(() {
+                                      errorPassword = "Password Doesn't Match";
+                                    });
+                                  }
+                                  if (value ==
+                                      _passwordController.text.toString()) {
+                                    setState(() {
+                                      errorPassword = "";
+                                    });
+                                  }
+                                },
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return "Please Enter Password";
+                                  } else if (value !=
+                                      _passwordController.text.toString()) {
+                                    return "Those passwords didn’t match. Try again.";
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  fillColor: Colors.grey[100],
+                                  filled: true,
+                                  //errorText: errorPassword,
+                                  errorStyle: TextStyle(
+                                      color: Colors.red, fontSize: 14),
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.fromLTRB(
+                                    20.0,
+                                    15.0,
+                                    20.0,
+                                    15.0,
+                                  ),
+                                  labelText: 'Confirm Password',
+                                  labelStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 15,
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.lock_outline,
+                                    color: Colors.grey,
+                                  ),
+                                  suffixIcon: Icon(
+                                    Icons.remove_red_eye,
+                                  ),
+                                ),
+                              ),
+                            ),
                             SizedBox(height: 5.0),
                             ListTile(
-                              leading: conditionsAndTermsAgreement(),
+                              leading: TermsCondition(),
                               trailing: Checkbox(
-                                value: false,
-                                onChanged: (bool value) {},
+                                value: isChecked,
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    isChecked = value;
+                                  });
+                                },
                               ),
                             ),
                             SizedBox(
@@ -166,88 +651,6 @@ class _VisitorSignUpScreenState extends State<VisitorSignUpScreen> {
     );
   }
 
-  ListTile dateOfBirthField() {
-    return ListTile(
-      onTap: () async {
-        print("object");
-        await showDatePicker(
-                context: context,
-                initialDate: DateTime.now(),
-                firstDate: DateTime(1870),
-                lastDate: DateTime.now())
-            .then((date) {
-          setState(() {
-            _dateTimeSelected = date;
-            print('date=$_dateTimeSelected');
-          });
-        });
-      },
-      tileColor: Colors.grey[100],
-      leading: Text(
-        _dateTimeSelected == null
-            ? 'Tap To Enter DOB'
-            : _dateTimeSelected.toString(),
-        style: TextStyle(color: Colors.grey, fontSize: 15),
-      ),
-      trailing: Icon(FontAwesomeIcons.calendarAlt),
-    );
-  }
-
-  TextFormField nameTextField() {
-    return TextFormField(
-      controller: _nameController,
-      decoration: InputDecoration(
-          labelText: 'Name',
-          labelStyle: TextStyle(color: Colors.grey, fontSize: 15),
-          border: InputBorder.none,
-          fillColor: Colors.grey[100],
-          filled: true,
-          prefixIcon: Icon(
-            FontAwesomeIcons.userAlt,
-            color: Colors.grey,
-            size: 15.0,
-          )),
-    );
-  }
-
-  TextFormField userNameTextField() {
-    return TextFormField(
-      controller: _userNameController,
-      decoration: InputDecoration(
-          labelText: 'User Name',
-          labelStyle: TextStyle(color: Colors.grey, fontSize: 15),
-          border: InputBorder.none,
-          fillColor: Colors.grey[100],
-          filled: true,
-          prefixIcon: Icon(
-            FontAwesomeIcons.userAlt,
-            color: Colors.grey,
-            size: 15.0,
-          )),
-    );
-  }
-
-  TextFormField passwordTextField() {
-    return TextFormField(
-      obscureText: true,
-      style: loginTextFieldsStyles,
-      keyboardType: TextInputType.visiblePassword,
-      controller: _passwordController,
-      decoration: InputDecoration(
-          fillColor: Colors.grey[100],
-          filled: true,
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          labelText: 'Password',
-          labelStyle: TextStyle(color: Colors.grey, fontSize: 15),
-          prefixIcon: Icon(
-            Icons.lock_outline,
-            color: Colors.grey,
-          ),
-          suffixIcon: Icon(Icons.remove_red_eye)),
-    );
-  }
-
   Container signUpBtn() {
     return Container(
         decoration: BoxDecoration(
@@ -256,7 +659,7 @@ class _VisitorSignUpScreenState extends State<VisitorSignUpScreen> {
         ),
         height: 40.0,
         child: TextButton(
-            onPressed: () {},
+            onPressed: _submitForm,
             child: Center(
               child: Text(
                 "Sign Up",
@@ -266,89 +669,9 @@ class _VisitorSignUpScreenState extends State<VisitorSignUpScreen> {
               ),
             )));
   }
-
-  TextFormField phoneNoTextField() {
-    return TextFormField(
-      controller: _phoneNumberController,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        fillColor: Colors.grey[100],
-        filled: true,
-        labelText: 'Phone Number',
-        labelStyle: TextStyle(color: Colors.grey, fontSize: 15),
-        border: InputBorder.none,
-        prefixIcon: Icon(
-          FontAwesomeIcons.phone,
-          color: Colors.grey,
-          size: 15.0,
-        ),
-      ),
-    );
-  }
-
-  TextFormField emailTextField() {
-    return TextFormField(
-      obscureText: false,
-      style: loginTextFieldsStyles,
-      controller: _emailController,
-      validator: (value) {
-        if (value.isEmpty) {
-          return "Please Enter Text";
-        }
-        return null;
-      },
-      decoration: InputDecoration(
-        fillColor: Colors.grey[100],
-        filled: true,
-        prefixIcon: Icon(
-          Icons.email,
-          color: Colors.grey,
-        ),
-        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        labelText: 'Email',
-        labelStyle: TextStyle(color: Colors.grey, fontSize: 15),
-        border: InputBorder.none,
-      ),
-    );
-  }
-
-  TextFormField confirmPasswordField() {
-    return TextFormField(
-      controller: _confirmPasswordController,
-      style: loginTextFieldsStyles,
-      keyboardType: TextInputType.visiblePassword,
-      obscureText: true,
-      decoration: InputDecoration(
-          fillColor: Colors.grey[100],
-          filled: true,
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          labelText: 'Confirm Password',
-          labelStyle: TextStyle(color: Colors.grey, fontSize: 15),
-          prefixIcon: Icon(
-            Icons.lock_outline,
-            color: Colors.grey,
-          ),
-          suffixIcon: Icon(Icons.remove_red_eye)),
-    );
-  }
-
-  Container conditionsAndTermsAgreement() {
-    return Container(
-      width: 250,
-      child: Text(
-        'By Creating An Account I agree to certain terms and conditions',
-        style: TextStyle(color: Colors.grey),
-      ),
-    );
-  }
 }
 
 class AlreadyAccount extends StatelessWidget {
-  const AlreadyAccount({
-    Key key,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -397,35 +720,6 @@ class BackgroundUpperContainer extends StatelessWidget {
           image: AssetImage(
             'assets/images/logo.png',
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class CircularProfilePicture extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: 128,
-        height: 128,
-        child: Stack(
-          children: <Widget>[
-            Align(
-                alignment: Alignment.topRight,
-                child: GestureDetector(
-                  onTap: () {},
-                  child: Icon(
-                    Icons.camera_alt,
-                    size: 25,
-                  ),
-                )),
-            CircleAvatar(
-              radius: 128,
-              backgroundImage: AssetImage('assets/images/profilepic.jpeg'),
-            ),
-          ],
         ),
       ),
     );

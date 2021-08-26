@@ -23,29 +23,31 @@ class FacialRecognitionStep3 extends StatelessWidget {
               })
         ],
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: screenHeight * 0.1,
-          ),
-          CustomStepper(
-            stepNo: 3,
-          ),
-          SizedBox(
-            height: screenHeight * 0.1,
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-            child: Text(
-              'Put your Face Infront Of Thermal Camera',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: screenHeight * 0.1,
             ),
-          ),
-        ],
+            CustomStepper(
+              stepNo: 3,
+            ),
+            SizedBox(
+              height: screenHeight * 0.1,
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+              child: Text(
+                'Please Put your Face Infront Of Tablet Cam',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

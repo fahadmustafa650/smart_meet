@@ -5,7 +5,7 @@ import 'package:smart_meet/screens/edit_profile_screen.dart';
 import 'package:smart_meet/widgets/info_panel.dart';
 import 'appointment_requests_screen.dart';
 
-class EmployeeProfileScreen extends StatelessWidget {
+class EmployeeHomeScreen extends StatelessWidget {
   static final id = '/employee_profile_screen';
   @override
   Widget build(BuildContext context) {

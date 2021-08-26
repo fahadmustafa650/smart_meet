@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smart_meet/widgets/profile_picture.dart';
 
 class PhoneCallScreen extends StatelessWidget {
   static final id = '/phone_call_screen';
