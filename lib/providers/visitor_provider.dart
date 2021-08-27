@@ -21,13 +21,10 @@ class Visitors with ChangeNotifier {
         'https://pure-woodland-42301.herokuapp.com/api/visitor/$email/viewProfile');
     final response = await http.get(url);
     final visitorData = jsonDecode(response.body);
-
-    // print('visitor=$visitorData');
-    final List<int> imageData =
-        await (visitorData['user']['avatar']['data']).cast<int>();
-    // print(visitorData['user']);
-    Uint8List imageList = Uint8List.fromList(imageData);
-    this.imageList = imageList;
+    // final List<int> imageData =
+    //     await (visitorData['user']['avatar']['data']).cast<int>();
+    // Uint8List imageList = Uint8List.fromList(imageData);
+    // this.imageList = imageList;
     _visitor = Visitor(
       id: visitorData['user']['id'].toString(),
       firstName: visitorData['user']['firstName'].toString(),
@@ -35,14 +32,8 @@ class Visitors with ChangeNotifier {
       username: visitorData['user']['username'].toString(),
       email: email,
       dateOfBirth: DateTime.tryParse(visitorData['user']['dateOfBirth']),
-      image: imageList,
+      imageUrl: visitorData['user']['avatar'].toString(),
     );
     notifyListeners();
-  }
-
-  Uint8List get imagesList {
-    return imageList != null
-        ? Uint8List.fromList(imageList)
-        : Uint8List.fromList([]);
   }
 }

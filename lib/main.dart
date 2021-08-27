@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_meet/Visitor/Visitor%20Verification%20Steps/booked_appointment_qrcode.dart';
 import 'package:smart_meet/providers/visitor_provider.dart';
 import 'Employee/employee_screens/emp_sign_in_screen.dart';
 import 'Employee/employee_screens/emp_sign_up_screen.dart';

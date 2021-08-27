@@ -71,7 +71,7 @@ class _VisitorHomeScreenState extends State<VisitorHomeScreen> {
                             radius: 100,
                             backgroundImage: _isLoading
                                 ? AssetImage('assets/images/blank_pic.jpg')
-                                : MemoryImage(visitorData.image),
+                                : NetworkImage(visitorData.imageUrl),
                           ),
                   ),
                   ListTile(
@@ -196,19 +196,6 @@ class _VisitorHomeScreenState extends State<VisitorHomeScreen> {
             ),
           )
         ],
-      ),
-    );
-  }
-
-  Widget bookAppointmentBtn(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, EmployeeSearchBar.id);
-      },
-      child: InfoPanel(
-        title: 'Book Appointment',
-        textIconColor: Colors.yellow[900],
-        iconData: Icons.approval,
       ),
     );
   }

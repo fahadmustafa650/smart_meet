@@ -4,7 +4,7 @@ import 'reserve_spot_employee_screen.dart';
 import 'search_employee_screen.dart';
 
 class EmployeeSearchResultScreen extends StatefulWidget {
-  static final id = '/employee_book_appointment';
+  static final id = '/employee_result_screen';
   @override
   _EmployeeSearchResultScreenState createState() =>
       _EmployeeSearchResultScreenState();

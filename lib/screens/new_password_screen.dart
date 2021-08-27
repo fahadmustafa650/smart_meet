@@ -1,8 +1,6 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 import 'password_changed_successfully.dart';
 
 class NewPasswordScreen extends StatelessWidget {
@@ -22,10 +20,8 @@ class NewPasswordScreen extends StatelessWidget {
       headers: <String, String>{
         'Content-Type': 'application/json',
       },
-      body: jsonEncode(<String, String>{
-        'email': 'fahad.khalid01234@gmail.com',
-        'newpass': _newPassword.text
-      }),
+      body: jsonEncode(
+          <String, String>{'email': email, 'newpass': _newPassword.text}),
     );
     Navigator.pushNamed(context, PasswordChanged.id);
     print('upadtePassword');

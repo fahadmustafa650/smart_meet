@@ -8,7 +8,7 @@ class Visitor {
   final String lastName;
   final String username;
   final String email;
-  final Uint8List image;
+  final String imageUrl;
   final DateTime dateOfBirth;
   Visitor(
       {this.id,
@@ -17,5 +17,5 @@ class Visitor {
       @required this.username,
       @required this.email,
       @required this.dateOfBirth,
-      @required this.image});
+      @required this.imageUrl});
 }

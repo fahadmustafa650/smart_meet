@@ -5,7 +5,7 @@ import 'package:smart_meet/screens/call_screen.dart';
 const chatBubbleColor = Colors.blue;
 
 class ChatingScreen extends StatefulWidget {
-  static final id = '/chatting_screen';
+  static final id = '/chating_screen';
   @override
   _ChatingScreenState createState() => _ChatingScreenState();
 }

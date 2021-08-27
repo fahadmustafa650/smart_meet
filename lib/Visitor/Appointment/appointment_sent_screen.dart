@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppointmentSentScreen extends StatelessWidget {
-  static final id = '/employee_request_sent';
+  static final id = '/appointment_sent_screen';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
