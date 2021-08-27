@@ -77,13 +77,16 @@ class _VisitorHomeScreenState extends State<VisitorHomeScreen> {
                   ListTile(
                     leading: Icon(Icons.person),
                     title: Text("Edit Profile"),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, EditProfileScreen.id);
+                    },
                   ),
                   ListTile(
                     leading: Icon(Icons.dashboard),
                     title: Text("Book Appointment"),
                     onTap: () {
                       // print("Categories Clicked");
+                      Navigator.pushNamed(context, BookedAppointmentsScreen.id);
                     },
                   ),
                   ListTile(
